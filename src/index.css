@@ -1,0 +1,254 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #06b6d4;
+  --color-secondary: #a855f7;
+  --color-accent: #f43f5e;
+  --color-dark-bg: #030712;
+  --color-card-bg: rgba(17, 24, 39, 0.4);
+  --color-border-color: rgba(255, 255, 255, 0.08);
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', sans-serif;
+
+  --animate-blob: blob 10s infinite;
+  --animate-blob-reverse: blob-reverse 12s infinite;
+  --animate-text-shine: text-shine 3s linear infinite;
+
+  @keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(40px, -50px) scale(1.2); }
+    66% { transform: translate(-30px, 30px) scale(0.8); }
+    100% { transform: translate(0px, 0px) scale(1); }
+  }
+  @keyframes blob-reverse {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(-40px, 40px) scale(0.8); }
+    66% { transform: translate(30px, -30px) scale(1.2); }
+    100% { transform: translate(0px, 0px) scale(1); }
+  }
+  @keyframes text-shine {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+}
+
+/* Custom Base Styles */
+html {
+  scroll-behavior: smooth;
+  background-color: #030712;
+  color: #f3f4f6;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #030712;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.2);
+  border: 2px solid #030712;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.4);
+}
+
+/* Custom Utility Classes */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+.text-gradient-cyan-purple {
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-purple-rose {
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #f43f5e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold-red {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #ef4444 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-panel {
+  background: rgba(17, 24, 39, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(17, 24, 39, 0.7);
+  border-color: rgba(6, 182, 212, 0.35);
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.15);
+  transform: translateY(-4px);
+}
+
+.glow-btn-cyan {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.glow-btn-cyan::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(90deg, #06b6d4, #3b82f6);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  filter: blur(8px);
+}
+
+.glow-btn-cyan:hover::after {
+  opacity: 0.75;
+}
+
+.glow-btn-purple {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.glow-btn-purple::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(90deg, #a855f7, #ec4899);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  filter: blur(8px);
+}
+
+.glow-btn-purple:hover::after {
+  opacity: 0.75;
+}
+
+/* Custom styles for typing cursor */
+.typing-cursor::after {
+  content: '|';
+  animation: cursor-blink 1s step-end infinite;
+  color: #06b6d4;
+  margin-left: 2px;
+}
+
+@keyframes cursor-blink {
+  from, to { opacity: 0 }
+  50% { opacity: 1 }
+}
+
+/* Custom active line for Experience timeline */
+.timeline-line-glow {
+  background: linear-gradient(to bottom, #06b6d4, #a855f7, #f43f5e);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+}
+
+/* Hologram AI Avatar custom styles */
+.hologram-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+  box-shadow: 0 0 35px rgba(6, 182, 212, 0.25), inset 0 0 20px rgba(6, 182, 212, 0.15);
+}
+
+.hologram-container::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+
+.hologram-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to bottom, rgba(6, 182, 212, 0), rgba(6, 182, 212, 0.8) 50%, rgba(6, 182, 212, 0));
+  animation: scanline 4s linear infinite;
+  z-index: 3;
+  pointer-events: none;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(400px); }
+}
+
+.cyber-orbit {
+  border: 1px dashed rgba(6, 182, 212, 0.4);
+  animation: rotate-clockwise 15s linear infinite;
+}
+
+.cyber-orbit-reverse {
+  border: 1px dashed rgba(168, 85, 247, 0.35);
+  animation: rotate-counter-clockwise 20s linear infinite;
+}
+
+@keyframes rotate-clockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-counter-clockwise {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+.pulse-ring {
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: 50%;
+  position: absolute;
+  animation: pulse-ring-animation 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring-animation {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
