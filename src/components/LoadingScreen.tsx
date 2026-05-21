@@ -72,25 +72,25 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 1 }}
-        exit={{ 
-          opacity: 0, 
-          scale: 1.05, 
+        exit={{
+          opacity: 0,
+          scale: 1.05,
           filter: 'blur(10px)',
-          transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } 
+          transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] }
         }}
         className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#010206] overflow-hidden select-none"
       >
         {/* Holographic Background Grid (Dangerous & Cool) */}
         <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
-        
+
         {/* Moving Cyber Scanline */}
         <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent shadow-[0_0_15px_rgba(6,182,212,0.4)] animate-[scanline_3s_linear_infinite] pointer-events-none" />
 
         {/* Ambient Pulsing Radial Aura in background */}
-        <motion.div 
+        <motion.div
           animate={{ scale: [1, 1.15, 1], opacity: [0.35, 0.55, 0.35] }}
           transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-          className="absolute w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.06)_0%,rgba(168,85,247,0.04)_50%,transparent_100%)] blur-[80px] pointer-events-none" 
+          className="absolute w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.06)_0%,rgba(168,85,247,0.04)_50%,transparent_100%)] blur-[80px] pointer-events-none"
         />
 
         {/* Diagonal Warning Stripes Border (Bold & Dangerous accent) */}
@@ -98,7 +98,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-[repeating-linear-gradient(45deg,#a855f7,#a855f7_10px,#010206_10px,#010206_20px)] opacity-50" />
 
         <div className="relative max-w-lg w-full px-6 flex flex-col items-center z-10">
-          
+
           {/* Advanced Neon Telemetry Radar Circle */}
           <div className="relative w-36 h-36 flex items-center justify-center mb-8">
             {/* Outer Slow Dash Ring */}
@@ -119,7 +119,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
               transition={{ repeat: Infinity, duration: 3.5, ease: "linear" }}
               className="absolute inset-4 rounded-full border-t border-l-2 border-purple-500 border-r-transparent border-b-transparent shadow-[0_0_15px_rgba(168,85,247,0.3)]"
             />
-            
+
             {/* Central Node Core with Radar Sweep */}
             <motion.div
               animate={{ scale: [0.95, 1.05, 0.95] }}
@@ -180,7 +180,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
           {/* Glowing Slider Progress Bar */}
           <div className="w-full mt-6 flex items-center justify-between gap-4">
             <div className="flex-grow h-1.5 bg-slate-950 rounded-full border border-slate-900 overflow-hidden p-[1px]">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 rounded-full shadow-[0_0_12px_rgba(6,182,212,0.8)] transition-all duration-100"
                 style={{ width: `${progress}%` }}
               />
