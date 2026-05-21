@@ -38,7 +38,7 @@ const Code2Icon = () => (
 export const Projects: React.FC = () => {
   const [filter, setFilter] = useState('All');
 
-  const categories = ['All', 'AI/ML', 'Backend & Distributed', 'Full Stack'];
+  const categories = ['AI/ML', 'Backend & Distributed', 'Full Stack'];
 
   const projects: Project[] = [
     {
@@ -171,7 +171,7 @@ export const Projects: React.FC = () => {
           {categories.map((cat) => (
             <button
               key={cat}
-              onClick={() => setFilter(cat)}
+              onClick={() => setFilter(prev => prev === cat ? 'All' : cat)}
               className={`relative px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 cursor-pointer ${filter === cat
                 ? 'text-white border-transparent shadow-[0_0_15px_rgba(6,182,212,0.25)]'
                 : 'text-slate-400 hover:text-white border border-slate-800 bg-slate-900/40 hover:bg-slate-900'

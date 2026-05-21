@@ -113,6 +113,13 @@ export const Skills: React.FC = () => {
   ];
 
   const handleSkillClick = (skillName: string) => {
+    if (activeSkill === skillName) {
+      setActiveSkill(null);
+      const logMessage = 'SYSTEM: Deselected module. Telemetry reset to standby.';
+      setSystemLogs(prev => [logMessage, ...prev].slice(0, 10));
+      return;
+    }
+
     setActiveSkill(skillName);
     
     // Project correlation mapping
@@ -184,7 +191,7 @@ export const Skills: React.FC = () => {
       return passesCategory && hasSkills;
     });
 
-  const allCategoriesList = ['All', ...skillCategories.map(c => c.title)];
+  const allCategoriesList = skillCategories.map(c => c.title);
 
   return (
     <section id="skills" className="relative py-24 sm:py-32 overflow-hidden bg-slate-950/40 bg-grid-pattern">
@@ -249,7 +256,7 @@ export const Skills: React.FC = () => {
             {allCategoriesList.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => setSelectedCategory(prev => prev === cat ? 'All' : cat)}
                 className={`px-3 py-1.5 rounded-lg text-[10px] font-mono font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-gradient-to-r from-cyan-500/10 to-purple-600/10 border border-cyan-500/30 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.05)]'
