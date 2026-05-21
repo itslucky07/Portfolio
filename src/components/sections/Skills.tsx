@@ -280,9 +280,6 @@ export const Skills: React.FC = () => {
                   layout
                   whileHover={{ y: -6 }}
                   className="relative rounded-2xl p-6 flex flex-col h-full bg-slate-900/40 border border-slate-800/80 hover:border-transparent transition-colors duration-300 overflow-hidden group shadow-lg backdrop-blur-md"
-                  style={{
-                    contentVisibility: 'auto'
-                  }}
                 >
                   {/* Category Gradient Border on Hover */}
                   <div className={`absolute inset-0 bg-gradient-to-r ${category.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none p-[1px] rounded-2xl -z-10`} />
