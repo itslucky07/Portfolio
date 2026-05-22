@@ -32,21 +32,53 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DATABASE_FILE = "database.db"
+# Try to import psycopg2 for PostgreSQL support
+try:
+    import psycopg2
+    HAS_POSTGRES = True
+except ImportError:
+    HAS_POSTGRES = False
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+def get_connection():
+    if DATABASE_URL and HAS_POSTGRES:
+        url = DATABASE_URL
+        # Neon / Heroku URL format compatibility
+        if url.startswith("postgres://"):
+            url = url.replace("postgres://", "postgresql://", 1)
+        return psycopg2.connect(url)
+    else:
+        return sqlite3.connect("database.db")
+
+def is_postgres():
+    return bool(DATABASE_URL and HAS_POSTGRES)
 
 def init_db():
-    conn = sqlite3.connect(DATABASE_FILE)
+    conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS messages (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL,
-            subject TEXT,
-            message TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
+    if is_postgres():
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS messages (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                subject VARCHAR(255),
+                message TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+    else:
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL,
+                subject TEXT,
+                message TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
     conn.commit()
     conn.close()
 
@@ -127,10 +159,12 @@ def contact_submit(msg: ContactMessage, background_tasks: BackgroundTasks):
         )
     
     try:
-        conn = sqlite3.connect(DATABASE_FILE)
+        conn = get_connection()
         cursor = conn.cursor()
+        placeholder = "%s" if is_postgres() else "?"
+        query = f"INSERT INTO messages (name, email, subject, message) VALUES ({placeholder}, {placeholder}, {placeholder}, {placeholder})"
         cursor.execute(
-            "INSERT INTO messages (name, email, subject, message) VALUES (?, ?, ?, ?)",
+            query,
             (msg.name.strip(), msg.email.strip(), msg.subject.strip() if msg.subject else "", msg.message.strip())
         )
         conn.commit()
@@ -155,7 +189,7 @@ def contact_submit(msg: ContactMessage, background_tasks: BackgroundTasks):
 @app.get("/api/messages", response_model=List[MessageResponse])
 def get_messages():
     try:
-        conn = sqlite3.connect(DATABASE_FILE)
+        conn = get_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT id, name, email, subject, message, created_at FROM messages ORDER BY created_at DESC")
         rows = cursor.fetchall()
@@ -163,6 +197,13 @@ def get_messages():
         
         messages = []
         for row in rows:
+            created_at_val = row[5]
+            # Handle PostgreSQL datetime objects vs SQLite strings safely
+            if not isinstance(created_at_val, str) and created_at_val is not None:
+                created_at_val = created_at_val.strftime("%Y-%m-%d %H:%M:%S")
+            elif created_at_val is None:
+                created_at_val = ""
+            
             messages.append(
                 MessageResponse(
                     id=row[0],
@@ -170,7 +211,7 @@ def get_messages():
                     email=row[2],
                     subject=row[3],
                     message=row[4],
-                    created_at=row[5]
+                    created_at=str(created_at_val)
                 )
             )
         return messages
