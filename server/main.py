@@ -100,33 +100,74 @@ class MessageResponse(BaseModel):
     created_at: str
 
 def send_email_notification(name: str, sender_email: str, subject: str, message: str):
+    resend_api_key = os.environ.get("RESEND_API_KEY")
+    recipient_email = os.environ.get("RECIPIENT_EMAIL", "luckysharma7578@gmail.com")
+
+    # 1. Try Resend API if API Key is configured (recommended for Vercel/Render serverless)
+    if resend_api_key:
+        import urllib.request
+        import urllib.error
+        import json
+
+        url = "https://api.resend.com/emails"
+        headers = {
+            "Authorization": f"Bearer {resend_api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        # Resend free tier/onboarding domain must send from onboarding@resend.dev, 
+        # but reply_to can be set to the user's actual email.
+        from_email = "Portfolio Contact <onboarding@resend.dev>"
+        email_data = {
+            "from": from_email,
+            "to": recipient_email,
+            "reply_to": sender_email,
+            "subject": f"New Portfolio Message from {name}: {subject or 'No Subject'}",
+            "html": f"""
+            <h3>New Portfolio Contact Form Submission</h3>
+            <p><strong>Name:</strong> {name}</p>
+            <p><strong>Email:</strong> {sender_email}</p>
+            <p><strong>Subject:</strong> {subject or 'No Subject'}</p>
+            <p><strong>Message:</strong></p>
+            <p style="white-space: pre-wrap;">{message}</p>
+            """
+        }
+
+        try:
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(email_data).encode("utf-8"),
+                headers=headers,
+                method="POST"
+            )
+            with urllib.request.urlopen(req) as response:
+                response_data = response.read().decode("utf-8")
+                print(f"SUCCESS: Email notification successfully sent to {recipient_email} via Resend!")
+                return
+        except urllib.error.HTTPError as e:
+            error_content = e.read().decode("utf-8")
+            print(f"ERROR: Resend API HTTP error: {e.code} - {error_content}")
+            # Fall through to SMTP or simulation if Resend fails, or just return
+        except Exception as e:
+            print(f"ERROR: Failed to send email via Resend: {str(e)}")
+            # Fall through
+
+    # 2. Try SMTP fallback if SMTP credentials are provided
     smtp_host = os.environ.get("SMTP_HOST")
     smtp_port = os.environ.get("SMTP_PORT")
     smtp_username = os.environ.get("SMTP_USERNAME")
     smtp_password = os.environ.get("SMTP_PASSWORD")
-    recipient_email = os.environ.get("RECIPIENT_EMAIL", "luckysharma7578@gmail.com")
 
-    # If SMTP configuration is not provided in environment, simulate it in terminal
-    if not all([smtp_host, smtp_port, smtp_username, smtp_password]):
-        print("\n=== ✉️ [Email Notification (Simulated)] ===")
-        print(f"Recipient: {recipient_email}")
-        print(f"From Name: {name}")
-        print(f"From Mail: {sender_email}")
-        print(f"Subject  : New Portfolio Message - {subject or 'No Subject'}")
-        print(f"Message  :\n{message}")
-        print("===========================================")
-        print("Tip: Define SMTP_HOST, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD environment variables to send real emails.\n")
-        return
+    if smtp_host and smtp_port and smtp_username and smtp_password:
+        try:
+            # Create message container
+            msg = MIMEMultipart()
+            msg['From'] = formataddr((name, smtp_username))
+            msg['Reply-To'] = sender_email
+            msg['To'] = recipient_email
+            msg['Subject'] = f"New Portfolio Message from {name}: {subject or 'No Subject'}"
 
-    try:
-        # Create message container
-        msg = MIMEMultipart()
-        msg['From'] = formataddr((name, smtp_username))
-        msg['Reply-To'] = sender_email
-        msg['To'] = recipient_email
-        msg['Subject'] = f"New Portfolio Message from {name}: {subject or 'No Subject'}"
-
-        body = f"""
+            body = f"""
 You have received a new contact form submission from your portfolio website.
 
 Sender Details:
@@ -137,18 +178,29 @@ Sender Details:
 Message:
 {message}
 """
-        msg.attach(MIMEText(body, 'plain'))
+            msg.attach(MIMEText(body, 'plain'))
 
-        # Standard SMTP connection with STARTTLS
-        port = int(smtp_port)
-        server = smtplib.SMTP(smtp_host, port)
-        server.starttls()
-        server.login(smtp_username, smtp_password)
-        server.sendmail(smtp_username, recipient_email, msg.as_string())
-        server.quit()
-        print(f"SUCCESS: Email notification successfully sent to {recipient_email}!")
-    except Exception as e:
-        print(f"ERROR: Failed to send email notification: {str(e)}")
+            # Standard SMTP connection with STARTTLS
+            port = int(smtp_port)
+            server = smtplib.SMTP(smtp_host, port)
+            server.starttls()
+            server.login(smtp_username, smtp_password)
+            server.sendmail(smtp_username, recipient_email, msg.as_string())
+            server.quit()
+            print(f"SUCCESS: Email notification successfully sent to {recipient_email} via SMTP!")
+            return
+        except Exception as e:
+            print(f"ERROR: Failed to send email notification via SMTP: {str(e)}")
+
+    # 3. Simulated fallback if nothing is configured
+    print("\n=== ✉️ [Email Notification (Simulated)] ===")
+    print(f"Recipient: {recipient_email}")
+    print(f"From Name: {name}")
+    print(f"From Mail: {sender_email}")
+    print(f"Subject  : New Portfolio Message - {subject or 'No Subject'}")
+    print(f"Message  :\n{message}")
+    print("===========================================")
+    print("Tip: Define RESEND_API_KEY or SMTP variables to send real emails.\n")
 
 @app.post("/api/contact", status_code=status.HTTP_201_CREATED)
 def contact_submit(msg: ContactMessage, background_tasks: BackgroundTasks):
