@@ -15,7 +15,8 @@ export const Contact: React.FC = () => {
     }
     setStatus('sending');
     try {
-      const response = await fetch('http://localhost:8000/api/contact', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://portfolio-mgyh.onrender.com';
+      const response = await fetch(`${apiUrl}/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,12 +69,12 @@ export const Contact: React.FC = () => {
     <section id="contact" className="relative py-24 sm:py-32 overflow-hidden bg-slate-950/40 bg-grid-pattern">
       {/* Top Divider */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-slate-800 to-transparent" />
-      
+
       {/* Glow ambient circle */}
       <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
           <motion.div

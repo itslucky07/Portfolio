@@ -172,6 +172,12 @@ export const Skills: React.FC = () => {
     }
   };
 
+  const categoriesMap: { [key: string]: string[] } = {
+    'AI/ML': ['AI/ML & Generative AI', 'Languages'],
+    'Backend & Distributed': ['Backend Engineering', 'Database & Tools', 'Languages'],
+    'Full Stack': ['Frontend Development', 'Backend Engineering', 'Database & Tools', 'Languages']
+  };
+
   // Filter skills logic
   const filteredCategories = skillCategories
     .map(category => {
@@ -186,12 +192,13 @@ export const Skills: React.FC = () => {
       };
     })
     .filter(category => {
-      const passesCategory = selectedCategory === 'All' || category.title === selectedCategory;
+      const passesCategory = selectedCategory === 'All' || 
+        (categoriesMap[selectedCategory] && categoriesMap[selectedCategory].includes(category.title));
       const hasSkills = category.skills.length > 0;
       return passesCategory && hasSkills;
     });
 
-  const allCategoriesList = skillCategories.map(c => c.title);
+  const allCategoriesList = ['AI/ML', 'Backend & Distributed', 'Full Stack'];
 
   return (
     <section id="skills" className="relative py-24 sm:py-32 overflow-hidden bg-slate-950/40 bg-grid-pattern">

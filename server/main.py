@@ -17,10 +17,16 @@ load_dotenv(dotenv_path)
 
 app = FastAPI(title="Lucky Sharma Portfolio API")
 
-# Configure CORS to accept connection from frontend port 5173
+# Configure CORS to accept connection from frontend port 5173 and custom origins
+allowed_origins_env = os.environ.get("ALLOWED_ORIGINS")
+if allowed_origins_env:
+    origins = [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
+else:
+    origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -176,4 +182,7 @@ def get_messages():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    # In production, we run with reload=False and host=0.0.0.0
+    is_prod = os.environ.get("PORT") is not None
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=not is_prod)

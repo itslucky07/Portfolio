@@ -45,11 +45,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ${
-        scrolled
+      className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ${scrolled
           ? 'py-3 bg-slate-950/75 border-b border-white/5 backdrop-blur-md shadow-lg shadow-black/20'
           : 'py-5 bg-transparent border-b border-transparent'
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand Logo */}
@@ -59,11 +58,9 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
           className="relative group flex items-center gap-1.5"
         >
           <span className="font-display font-black text-2xl tracking-tighter text-white group-hover:text-cyan-400 transition-colors duration-300">
-            LUCKY<span className="text-cyan-400 group-hover:text-purple-400">.</span>S
+            LUCKY<span className="text-cyan-400 group-hover:text-purple-400"></span> Sharma
           </span>
-          <span className="hidden sm:inline-block font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 bg-cyan-950/60 text-cyan-400 rounded-md border border-cyan-800/40">
-            AI/ML
-          </span>
+
         </a>
 
         {/* Desktop Navigation Links */}
@@ -75,9 +72,8 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleLinkClick(e, link.href)}
-                className={`relative px-4 py-2 text-sm font-medium tracking-wide transition-colors duration-300 rounded-lg hover:text-white ${
-                  isActive ? 'text-white' : 'text-slate-400'
-                }`}
+                className={`relative px-4 py-2 text-sm font-medium tracking-wide transition-colors duration-300 rounded-lg hover:text-white ${isActive ? 'text-white' : 'text-slate-400'
+                  }`}
               >
                 {link.name}
                 {isActive && (
@@ -151,11 +147,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
                     key={link.name}
                     href={link.href}
                     onClick={(e) => handleLinkClick(e, link.href)}
-                    className={`px-4 py-3 rounded-lg text-base font-semibold tracking-wide border-l-2 transition-all ${
-                      isActive
+                    className={`px-4 py-3 rounded-lg text-base font-semibold tracking-wide border-l-2 transition-all ${isActive
                         ? 'bg-slate-900 border-cyan-400 text-white shadow-inner shadow-cyan-900/10'
                         : 'border-transparent text-slate-400 hover:bg-slate-900/40 hover:text-white'
-                    }`}
+                      }`}
                   >
                     {link.name}
                   </a>
