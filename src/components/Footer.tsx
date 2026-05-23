@@ -29,15 +29,13 @@ export const Footer: React.FC = () => {
   return (
     <footer className="relative py-12 border-t border-slate-900 bg-slate-950/80 backdrop-blur-md z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-        
+
         {/* Attribution/Copyright */}
         <div className="text-center md:text-left">
           <p className="text-sm font-medium text-slate-300">
             &copy; {new Date().getFullYear()} Lucky Sharma. All rights reserved.
           </p>
-          <p className="text-xs text-slate-500 mt-1 font-mono">
-            Built with React, Tailwind CSS v4 & Framer Motion
-          </p>
+
         </div>
 
         {/* Minimal Social Icon List */}
